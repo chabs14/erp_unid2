@@ -3,38 +3,32 @@ $(document).ready(function () {
 
     $(".btnModulo").click(function (e) {
         e.preventDefault();
-        console.log("oo)");
+        console.log("hola");
     });
 
     $("#newVendedor").click(function () {
         obj = {
             action: "insertVendedor",
         };
-        $(".modal-title").text("NuevoVendedor");
-        $("#btnInsertVendedor").text("Guardar");
-        $("#formVendedor")[0].reset();
+        $(".modal-title").text("Nuevo vendedor");
+        $("#btnInsertVendedor").text("Insertar");
+        $("#formVendedores")[0].reset();
     });
 
     $(".btnEdit").click(function () {
         let id = $(this).attr("data");
         obj = {
             action: "getVendedor",
-            id_usr: id,
+            empleado_id:id,
         };
         $.post(
             "functions.php",
             obj,
             function (res) {
-                $("#codigo_vendedor").val(res.codigo_vendedor);
-                $("#nombre_vendedor").val(res.nombre_vendedor);
-                $("#domicilio_vendedor").val(res.domicilio_vendedor);
-                $("#telefono_vendedor").val(res.telefono_vendedor);
-                $("#comision_vendedor").val(res.comision_vendedor);
-                $("#correo_vendedor").val(res.correo_vendedor);
-                $("#id_perfil").val(res.id_perfil);
+                $("#empleado_id").val(res.empleado_id);
                 obj = {
                     action: "updateVendedor",
-                    id_vendedor: id,
+                    empleado_id:id,
                 };
             },
             "JSON"
@@ -81,12 +75,12 @@ $(document).ready(function () {
     });
 
     $("#btnInsertVendedor").click(function () {
-        $("#modalVendedor")
+        $("#modalVendedores")
             .find("input")
             .map(function (i, e) {
                 obj[e.name] = $(this).val();
             });
-        $("#modalVendedor")
+        $("#modalVendedores")
             .find("select")
             .map(function (i, e) {
                 obj[e.name] = $(this).val();
@@ -103,24 +97,6 @@ $(document).ready(function () {
                                 icon: "error",
                                 title: "Error...",
                                 text: "Campos vacios, favor de llenarlos correctamente.",
-                            });
-                        } else if (res.status == 2) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error...",
-                                text: "Intentalo nuevamente.",
-                            });
-                        } else if (res.status == 3) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error...",
-                                text: "Intentalo nuevamente.",
-                            });
-                        } else if (res.status == 4) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error...",
-                                text: "Inserte un número de telefono valido.",
                             });
                         } else if (res.status == 1) {
                             Swal.fire({
@@ -146,18 +122,6 @@ $(document).ready(function () {
                                 icon: "error",
                                 title: "Error...",
                                 text: "Campos vacios, favor de llenarlos correctamente.",
-                            });
-                        } else if (res.status == 2) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error...",
-                                text: "Intentalo nuevamente.",
-                            });
-                        } else if (res.status == 4) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error...",
-                                text: "Inserte un número de telefono valido.",
                             });
                         } else if (res.status == 1) {
                             Swal.fire({
