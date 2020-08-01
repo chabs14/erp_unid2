@@ -166,7 +166,7 @@ const itemsFactory = (number, type, $data) => {
                                 <input type="text" class="form-control" id="languageName${number}" name="languageName">
                             </div>
                         </div>
-                        <div class="form-group col-4">
+                        <div class="form-group col">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">%</span>
@@ -201,7 +201,7 @@ const itemsFactory = (number, type, $data) => {
                             </div>
                         </div>
                         <div class="form-group col-3">
-                            <label for="previousCompanyTelephone${number}">Telefono:</label>
+                            <label for="previousCompanyTelephone${number}">Telefono (10 dígitos):</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input type="text" class="form-control" id="previousCompanyTelephone${number}" name="previousCompanyTelephone"
                                        pattern="[0-9.]+">
@@ -319,7 +319,7 @@ const itemsFactory = (number, type, $data) => {
                             </div>
                         </div>
                         <div class="form-group col-2">
-                            <label for="referencePhone${number}">Telefono:</label>
+                            <label for="referencePhone${number}">Telefono (10 dígitos):</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input type="text" class="form-control" id="referencePhone${number}" name="referencePhone"
                                        pattern="[0-9.]+">
@@ -405,6 +405,33 @@ const itemsFactory = (number, type, $data) => {
             )
         break;
 
+        case (type === 'supervisePosition'):
+            return(
+                `<li class="list-group-item" id="otherIncome${number}">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="removeElement(event)">
+                    &times;
+                </button>
+                <form class="otherIncomes" id="otherIncome${number}">
+                     <div class="form-row">
+                        <div class="form-group col-9">
+                            <label for="otherIncomeDescription${number}">Descripción:</label>
+                            <div class="input-group input-group-sm mb-">
+                                <input type="text" class="form-control" id="otherIncomeDescription${number}" name="otherIncomeDescription">
+                            </div>
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="otherIncomeValue${number}">Importe mensual:</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="number" class="form-control" id="otherIncomeValue${number}" name="otherIncomeValue" value="0.0">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </li>`
+            )
+            break;
+
+
         default:
             return('')
         break;
@@ -420,17 +447,19 @@ const handleErrors = ( { form, data }) => {
     data.forEach(error => {
         const formId = form ? `#${form}` : ''
         const field = document.querySelector(`${formId} [name=${error.field}]`)
-        field.classList.add('is-invalid')
-        $(`${formId} [name=${error.field}]`).popover({
-            content: error.message,
-            placement: 'bottom',
-            trigger: 'hover',
-            delay: {show: 0, hide: 100}
-        });
-        field.addEventListener('change', event => {
-            field.classList.remove('is-invalid')
-            $(`#${form} [name=${error.field}]`).popover('dispose')
-        })
+        if(field && field.classList){
+            field.classList.add('is-invalid')
+            $(`${formId} [name=${error.field}]`).popover({
+                content: error.message,
+                placement: 'bottom',
+                trigger: 'hover',
+                delay: {show: 0, hide: 100}
+            });
+            field.addEventListener('change', event => {
+                field.classList.remove('is-invalid')
+                $(`${formId} [name=${error.field}]`).popover('dispose')
+            })
+        }
     })
 }
 
@@ -438,7 +467,9 @@ const singleValueSetter = (data) => {
     try{
         for (const value in data) {
             const input = document.querySelector(`#${value}`)
-            input.value = data[value]
+            if(input){
+                input.value = data[value]
+            }
         }
         return true
     } catch (e) {

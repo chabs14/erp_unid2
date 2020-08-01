@@ -1,9 +1,9 @@
 $(document).ready(function () {
     var obj = {};
 
-    $(".btnModulo").click(function (e) {
-        e.preventDefault();
-        console.log("hola");
+    $(".chosen-select").chosen({
+        no_results_text: "Sin resultados para: ",
+        width: "100%",
     });
 
     $("#newVendedor").click(function () {
@@ -19,16 +19,18 @@ $(document).ready(function () {
         let id = $(this).attr("data");
         obj = {
             action: "getVendedor",
-            empleado_id:id,
+            id: id,
         };
         $.post(
             "functions.php",
             obj,
             function (res) {
                 $("#empleado_id").val(res.empleado_id);
+                $("#id_vendedor").val(res.id_vendedor);
+                $("#empleado_id").trigger("chosen:updated");
                 obj = {
                     action: "updateVendedor",
-                    empleado_id:id,
+                    id: id,
                 };
             },
             "JSON"
@@ -41,7 +43,7 @@ $(document).ready(function () {
         let id = $(this).attr("data");
         obj = {
             action: "deleteVendedor",
-            id_vendedor: id,
+            id: id,
         };
         Swal.fire({
             title: "¿Estás seguro?",
@@ -75,16 +77,17 @@ $(document).ready(function () {
     });
 
     $("#btnInsertVendedor").click(function () {
-        $("#modalVendedores")
+        $("#modal")
             .find("input")
             .map(function (i, e) {
                 obj[e.name] = $(this).val();
             });
-        $("#modalVendedores")
+        $("#modal")
             .find("select")
             .map(function (i, e) {
                 obj[e.name] = $(this).val();
             });
+
 
         switch (obj.action) {
             case "insertVendedor":
@@ -97,6 +100,12 @@ $(document).ready(function () {
                                 icon: "error",
                                 title: "Error...",
                                 text: "Campos vacios, favor de llenarlos correctamente.",
+                            });
+                        } else if (res.status == 2) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error...",
+                                text: "Empleado en uso",
                             });
                         } else if (res.status == 1) {
                             Swal.fire({
@@ -122,6 +131,12 @@ $(document).ready(function () {
                                 icon: "error",
                                 title: "Error...",
                                 text: "Campos vacios, favor de llenarlos correctamente.",
+                            });
+                        } else if (res.status == 2) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error...",
+                                text: "Empleado en uso",
                             });
                         } else if (res.status == 1) {
                             Swal.fire({

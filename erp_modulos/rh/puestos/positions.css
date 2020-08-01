@@ -1,0 +1,58 @@
+#schedule .days button[aria-expanded=false] .fa::before {
+    content: "\f067";
+}
+
+#schedule .days button[aria-expanded=true] .fa::before {
+    content: "\f068";
+}
+
+#schedule .days button[aria-expanded=true] {
+    background-color: #d92550 !important;
+    border-color: #d92550 !important;
+}
+
+#schedule .days button[aria-expanded=true] .btn:hover {
+    color: #fff;
+    background-color: #b81f44;
+    border-color: #ad1e40;
+}
+
+.btn {
+    height: 100%;
+}
+
+.main-container {
+    padding: 15px;
+}
+
+.popover {
+    max-width: 306.6px;
+    border-radius: 6px;
+    border:none;
+    box-shadow: 0 0 3px 0.5px #b6bdc4;
+    top: 7px !important;
+}
+
+.popover-body {
+    border: none;
+    padding: 20px 35px 20px 35px;
+    color: #2f333b;
+    font-size: 13px;
+    font-style: italic;
+    z-index: 2;
+    line-height: 1.53;
+    letter-spacing: 0.1px;
+}
+
+.modal {
+    top: 10%;
+}
+
+.dropdown-toggle {
+    background-color: white;
+}
+
+.form-row {
+    width: 100%;
+    padding-bottom: 5px;
+}

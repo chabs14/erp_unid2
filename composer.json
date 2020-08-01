@@ -4,8 +4,9 @@
         "components/jquery": "^3.5",
         "opis/json-schema": "^1.0",
         "ext-json": "*",
-        "ext-pdo": "*"
-
+        "ext-pdo": "*",
+        "components/chosen": "^1.8",
+        "fpdf/fpdf": "^1.82"
     },
     "config": {
         "component-dir": "/vendor"

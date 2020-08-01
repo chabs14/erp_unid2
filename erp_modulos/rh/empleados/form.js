@@ -13,8 +13,64 @@ document.addEventListener('DOMContentLoaded', async () => {
             $('#nationality').selectpicker('refresh')
             $('#nationality').selectpicker({
                 liveSearch: true,
-                liveSearchNormalize: true
+                liveSearchNormalize: true,
+                size: 5
             });
+        })
+        .catch(e => {
+            console.log(e)
+        })
+
+    const department = document.querySelector('#department')
+
+    department.addEventListener('change', event => {
+        const id = department.value
+        axios.get(`http://${window.location.hostname}/erp_modulos/rh/Api/positions?department=${id}`)
+            .then(response => {
+                const data = response.data
+                const rows = data.map(option => (`<option value="${option.id}">${option.positionName}</option>`))
+                const element = document.querySelector(`#position`)
+                element.innerHTML = rows.join('')
+                $('#position').selectpicker('refresh')
+                $('#position').selectpicker({
+                    liveSearch: true,
+                    liveSearchNormalize: true,
+                    size: 5
+                });
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    })
+
+    await axios.get(`http://${window.location.hostname}/erp_modulos/rh/Api/departments`)
+        .then(response => {
+            const data = response.data
+            const rows = data.map(option => (`<option value="${option.id}">${option.name}</option>`))
+            department.innerHTML = rows.join('')
+            $('#department').selectpicker('refresh')
+            $('#department').selectpicker({
+                liveSearch: true,
+                liveSearchNormalize: true,
+                size: 5
+            });
+            const id = department.value
+            axios.get(`http://${window.location.hostname}/erp_modulos/rh/Api/positions?department=${id}`)
+                .then(response => {
+                    const data = response.data
+                    const rows = data.map(option => (`<option value="${option.id}">${option.positionName}</option>`))
+                    const element = document.querySelector(`#position`)
+                    element.innerHTML = rows.join('')
+                    $('#position').selectpicker('refresh')
+                    $('#position').selectpicker({
+                        liveSearch: true,
+                        liveSearchNormalize: true,
+                        size: 5
+                    });
+                })
+                .catch(e => {
+                    console.log(e)
+                })
         })
         .catch(e => {
             console.log(e)
@@ -40,7 +96,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     $('#suburb').selectpicker('refresh')
                     $('#suburb').selectpicker({
                         liveSearch: true,
-                        liveSearchNormalize: true
+                        liveSearchNormalize: true,
+                        size: 5
                     });
                 })
                 .catch(e => {
@@ -50,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         field: 'postalCode',
                         message: data.error_message
                     }]
-                    handleErrors({ form:'personalData', data:error })
+                    handleErrors({ form:'personalData', data: error })
                 })
         , 1000)
     })
@@ -286,7 +343,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(otherIncomes.length){
                 const data = Array.from(otherIncomes).map(otherIncome => {
                     const form_data = new FormData(otherIncome)
-                    return Object.fromEntries(form_data)
+                    return form_data
                 })
                 obj['economicData'] = {
                     ...obj.economicData,
@@ -294,15 +351,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
 
-            console.log(obj)
-
             axios.post(`http://${window.location.hostname}/erp_modulos/rh/Api/employees`, obj)
                 .then(response => {
                     if (response.data === 1) {
-                        location.reload()
+                        location = `http://${window.location.hostname}/erp_modulos/rh/empleados/`
                     }
                 })
                 .catch(e => {
+                    console.log(obj)
                     handleErrors({ data: e.response.data})
                     const error = document.querySelector('.is-invalid')
                     error.scrollIntoView({

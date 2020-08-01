@@ -9,15 +9,15 @@ if ($_POST) {
             break;
 
         case 'getVendedor':
-            getVendedor($_POST["empleado_id"]);
+            getVendedor($_POST["id"]);
             break;
 
         case 'updateVendedor':
-            updateVendedor($_POST["empleado_id"]);
+            updateVendedor($_POST["id"]);
             break;
 
         case 'deleteVendedor':
-            deleteVendedor($_POST["id_vendedor"]);
+            deleteVendedor($_POST["id"]);
             break;
 
         default:
@@ -25,53 +25,67 @@ if ($_POST) {
             break;
     }
 }
+function validateVendedor($empleado_id)
+{
+    global $db;
+    $vendedores = $db->select("vendedores", "*", ["empleado_id" => $empleado_id]);
+    foreach ($vendedores as $vendedor) {
+        if ($vendedor["empleado_id"] == $empleado_id) {
+            return true;
+        }
+    }
+}
 
 function insertVendedor()
 {
     global $db;
-    $respuesta = [];
-    $empleado_id = ($_POST['empleado_id']);
-
-
-    if (empty($empleado_id) == '1') {
-        $respuesta['status'] = 0;
+    $duplicate = false;
+    if ($_POST["empleado_id"] == "0") {
+        $res["status"] = 0;
     } else {
-        $db->insert('vendedores', [
-            "empleado_id" => $empleado_id,
-        ]
-    );
-        $respuesta['status'] = 1;
+        $duplicate = validateVendedor($_POST["empleado_id"]);
+        if (!$duplicate) {
+            $db->insert("vendedores", [
+                "empleado_id" => $_POST["empleado_id"]
+            ]);
+            $res["status"] = 1;
+        } else {
+            $res["status"] = 2;
+        }
     }
 
-
-    echo json_encode($respuesta);
+    echo json_encode($res);
 }
 
-function getVendedor($id_empleado)
+function getVendedor($id)
 {
     global $db;
-    $vendedor = $db->get("vendedores", "*", ["empleado_id" => $id_empleado]);
+    $vendedor = $db->get("vendedores", "*", ["id_vendedor" => $id]);
     echo json_encode($vendedor);
 }
 
-function updateVendedor($id_vendedor)
+function updateVendedor($id)
 {
-
-    $empleado_id = ($_POST['empleado_id']);
-    if (empty($empleado_id) == '1') {
-        $respuesta['status'] = 0;
-    } else {
     global $db;
-        $db->update(
-            "vendedores",
-            [
-                "empleado_id" => $empleado_id
-            ]
-        );
-
-        $respuesta["status"] = 1;
+    $duplicate = false;
+    if ($_POST["empleado_id"] == "0") {
+        $res["status"] = 0;
+    } else {
+        $duplicate = validateVendedor($_POST["empleado_id"]);
+        if (!$duplicate) {
+            $db->update(
+                "vendedores",
+                [
+                    "empleado_id" => $_POST["empleado_id"]
+                ],
+                ["id_vendedor" => $id]
+            );
+            $res["status"] = 1;
+        } else {
+            $res["status"] = 2;
+        }
     }
-    echo json_encode($respuesta);
+    echo json_encode($res);
 }
 
 function deleteVendedor($id_vendedor)

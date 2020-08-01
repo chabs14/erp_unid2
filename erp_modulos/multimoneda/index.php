@@ -6,8 +6,9 @@ error_reporting(0);
 $id_usr = $_SESSION['id'];
 if (isset($id_usr)) {
     //Traer id del modulo actual
-    $idModulo = $db->select("modulos", "id_modulo", ["nombre_modulo" => "multimoneda"]);
+    $idModulo = $db->select("modulos", "id_modulo", ["nombre_modulo" => "multimoneda"]);    
 ?>
+
     <!DOCTYPE html>
     <html lang="mx">
 
@@ -16,8 +17,10 @@ if (isset($id_usr)) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, 
         user-scalable=no, shrink-to-fit=no" />
         <link rel="stylesheet" href="<?php echo constant('URL') ?>/main.css" />
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-        <script src="<?php echo constant('URL') ?>/vendor/components/jquery/jquery.min.js"></script>
+        <link rel="stylesheet" href="<?php echo constant('URL') ?>/style.css" />
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.css">
+
+
         <title>Multimoneda</title>
     </head>
 
@@ -52,11 +55,21 @@ if (isset($id_usr)) {
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="main-card mb-3 card">
                                     <div class="card-body">
-                                        <table class="mb-0 table table-bordered text-center">
+                                        <table class="mb-0 table table-bordered text-center" id="tableMultimoneda">
+                                            <form>
+                                                <div class="form-group">
+                                                <div class="form-row">
+                                                <div class="col-1 ml-auto">
+                                                     <input class="form-control" type="date" value="<?=$query;?>" id="filtro-fecha" max="<?=date("Y-m-d");?>">
+                                                </div>
+                                                </div>
+                                                </div>
+                                            </form>
                                             <thead>
                                                 <tr>
                                                     <th>Fuente</th>
@@ -67,7 +80,7 @@ if (isset($id_usr)) {
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                $multimoneda = $db->select("multimoneda", "*");
+                                                $multimoneda = $db->select("multimoneda", "*", ["ORDER" => ["id" => "DESC"],]);
                                                 if ($multimoneda) {
                                                     foreach ($multimoneda as $row) {
                                                         # code...
@@ -89,6 +102,7 @@ if (isset($id_usr)) {
                             </div>
                         </div>
                     </div>
+
                     <!-- Footer -->
                     <?php include(ROOT_PATH . "/includes/footer.php"); ?>
                 </div>
@@ -98,6 +112,14 @@ if (isset($id_usr)) {
         </div>
         <!-- /Full Container -->
         <script type="text/javascript" src="<?php echo constant('URL') ?>/assets/scripts/main.js"></script>
+        <script src="<?php echo constant('URL') ?>/vendor/components/jquery/jquery.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.js"></script>
+        <script>
+            $('#tableMultimoneda').bootstrapTable({
+                pagination: true,
+                search: true
+            })
+        </script>
     </body>
 
     </html>

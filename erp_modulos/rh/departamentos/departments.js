@@ -5,16 +5,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     await axios.get(`http://${window.location.hostname}/erp_modulos/rh/Api/departments`)
         .then(response => {
             const rows = response.data.map((data, id) => (
-                `<tr class="d-flex">
-                 <th class="col-1" scope="row" id=${id}>${id}</th>
-                 <td class="col-6" data=${data.id}>${data.name}</td>
-                 <td class="col-4" style='white-space: nowrap'>
-                 <button class="btn btn-sm btn-primary" id="btn-edit" data-toggle="modal" data-target="#modal-edit" data=${data.id}  data-name="${data.name}">Editar</button>
-                 <button class="btn btn-sm btn-danger" id="btn-delete" data-toggle="modal" data-target="#modal-delete" data=${data.id} data-name="${data.name}">Eliminar</button>
+                `<tr>
+                 <th scope="row" id=${id}>${id}</th>
+                 <td data=${data.id}>${data.name}</td>
+                 <td>
+                 <button class="btn btn-sm btn-outline-primary" id="btn-edit" data-toggle="modal" data-target="#modal-edit" data=${data.id}  data-name="${data.name}">Editar</button>
+                 <button class="btn btn-sm btn-outline-danger" id="btn-delete" data-toggle="modal" data-target="#modal-delete" data=${data.id} data-name="${data.name}">Eliminar</button>
                  </td>
                  </tr>`
             ));
             table.innerHTML += rows.join('')
+            $('#table-dep').bootstrapTable({
+                pagination: true
+            })
         })
         .catch(e => {
             console.log(e)
@@ -26,11 +29,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     submit.addEventListener('click', event => {
         const form_data = new FormData(form)
-        const data = JSON.stringify(Object.fromEntries(form_data))
+        const data = Object.fromEntries(form_data)
 
         axios.post(`http://${window.location.hostname}/erp_modulos/rh/Api/departments`, data)
             .then(response => {
                 if (response.data === 1) {
+                    Swal.fire({
+                        title: 'Departamento creado!',
+                        icon: 'success'
+                    })
                     location.reload()
                 }
             })
@@ -46,6 +53,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         axios.delete(`http://${window.location.hostname}/erp_modulos/rh/Api/departments/${id}`)
             .then(response => {
                 if (response.data === 1) {
+                    Swal.fire({
+                        title: 'Departamento eliminado!',
+                        icon: 'success'
+                    })
                     location.reload()
                 }
             })
@@ -110,6 +121,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         axios.put(`http://${window.location.hostname}/erp_modulos/rh/Api/departments/${id}`, data)
             .then(response => {
                 if (response.data === 1) {
+                    Swal.fire({
+                        title: 'Departamento actualizado!',
+                        icon: 'success'
+                    })
                     location.reload()
                 }
                 if (response.data === 0) {
